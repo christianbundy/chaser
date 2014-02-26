@@ -1,0 +1,45 @@
+<head>
+  <title>chaser</title>
+</head>
+
+<body>
+  <div class="container">
+    {{> main}}
+  </div>
+</body>
+
+<template name="main">
+<div class="row">
+  <div class="col-sm-6">
+    <h1>{{> bac}}</h1>
+  </div>
+  <div class="col-sm-6">
+    {{> action}}
+  </div>
+</div>
+<br />
+{{> history}}
+</template>
+
+<template name="history">
+<table class="table table-striped">
+  <tbody>
+    {{#each shots}}
+    <tr>
+      <td>{{time}}</td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+</template>
+
+<template name="bac">
+{{current}}
+</template>
+
+<template name="action">
+<button class="reset btn btn-danger btn-lg pull-right">Reset</button>
+ 
+<button class="shot btn btn-primary btn-lg pull-right">Shot</button>
+</template>
+
