@@ -1,5 +1,6 @@
 <head>
   <title>chaser</title>
+  <meta name="viewport" content="initial-scale = 1.0,maximum-scale = 1.0" />
 </head>
 
 <body>
@@ -10,10 +11,10 @@
 
 <template name="main">
 <div class="row">
-  <div class="col-sm-6">
-    <h1>{{> bac}}</h1>
+  <div class="center col-sm-6 col-xs-12">
+    <h1 class="center">{{> bac}}</h1>
   </div>
-  <div class="col-sm-6">
+  <div class="center col-sm-6 col-xs-12">
     {{> action}}
   </div>
 </div>
@@ -38,8 +39,12 @@
 </template>
 
 <template name="action">
-<button class="reset btn btn-danger btn-lg pull-right">Reset</button>
- 
-<button class="shot btn btn-primary btn-lg pull-right">Shot</button>
+<div class="row">
+<div class="col-sm-6">
+  <button class="pull-right reset btn btn-danger btn-lg">Reset</button>
+</div>
+<div class="col-sm-6">
+<button class="pull-left center shot btn btn-primary btn-lg">Shot</button>
+</div>
+</div>
 </template>
-

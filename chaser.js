@@ -1,5 +1,7 @@
 Shots = new Meteor.Collection('shots');
 
+var time = new Deps.Dependency();
+
 Person = {
   pounds: 122,
   penis: 0
@@ -17,10 +19,14 @@ bac = function (shots, pounds, penis, hours) {
 
 if (Meteor.isClient) {
   Template.history.shots = function () {
-    return Shots.find(); 
+    return Shots.find();
   };
+  setInterval(function () {
+    time.changed()
+  }, 100)
 
-  Template.bac.current = function () {
+    Template.bac.current = function () {
+    time.depend();
     var all = Shots.find().fetch();
     if (all[0] != null) {
       var diff = (new Date() - new Date(all[0].time)) / 1000 / 60 / 60;
@@ -29,9 +35,9 @@ if (Meteor.isClient) {
     } else {
       var content = 0;
     }
-    return 'BAC: ' + content.toFixed(3);
+    return + content.toFixed(6);
     } else {
-      return 'BAC: 0.000';
+      return 0;
     }
   }
 
@@ -55,4 +61,3 @@ if (Meteor.isServer) {
     });
   });
 }
-
