@@ -10,33 +10,43 @@ var getTime = function (date) {
     var min  = date.getMinutes();
     min = (min < 10 ? "0" : "") + min;
 
-    var sec  = date.getSeconds();
-    sec = (sec < 10 ? "0" : "") + sec;
-
-    var year = date.getFullYear();
-
-    var month = date.getMonth() + 1;
-    month = (month < 10 ? "0" : "") + month;
-
-    var day  = date.getDate();
-    day = (day < 10 ? "0" : "") + day;
-
     return hour + ":" + min;
 }
 
-Person = {
-  pounds: 122,
-  penis: 0
+var Person = {
+  pounds: 150,
+  gender: 'male'
+};
+
+bac = function (drinks, pounds, gender, hours) {
+  if (gender === 'male') {
+    var ratio = 0.58;
+    var mt = 0.015;
+  } else {
+    var ratio = 0.49;
+    var mt = 0.017;
+  }
+  var kg = pounds * 0.453592;
+
+  var ebac = (0.806*drinks*1.2)/(ratio*kg) - (mt*hours);
+
+  hours = (0.806*drinks*1.2)/(ratio*kg) / mt
+  return Math.max(ebac, 0);
 }
 
-bac = function (shots, pounds, penis, hours) {
-  if (penis) {
-    var ratio = 0.73;
+sober = function (drinks, pounds, gender, hours) {
+  if (gender) {
+    var ratio = 0.58;
+    var mt = 0.015;
   } else {
-    var ratio = 0.66;
+    var ratio = 0.49;
+    var mt = 0.017;
   }
-  var result = ((shots * 0.55 * 5.14 / (pounds * ratio)) - 0.015 * hours);
-  return Math.max(result, 0);
+  var kg = pounds * 0.453592;
+
+  var sobriety = (0.806*drinks*1.2)/(ratio*kg) / mt
+
+  return Math.max(sobriety, 0);
 }
 
 if (Meteor.isClient) {
@@ -55,7 +65,7 @@ if (Meteor.isClient) {
     if (all[0] != null) {
       var diff = (new Date() - new Date(all[0].time)) / 1000 / 60 / 60;
     if (all.length > 0) {
-      var content = bac(all.length, Person.pounds, Person.penis, diff);
+      var content = bac(all.length, Person.pounds, Person.gender, diff);
     } else {
       var content = 0;
     }
@@ -67,7 +77,6 @@ if (Meteor.isClient) {
 
   Template.action.events({
     'click .shot': function () {
-      if (typeof console !== 'undefined')
       var now = new Date();
         Shots.insert({time: now, easy: getTime(now), user: Meteor.userId()});
     },
@@ -75,6 +84,13 @@ if (Meteor.isClient) {
       Meteor.call('clear');
     }
   });
+
+  Template.person.events({
+    'change input, change select': function() {
+      Person.pounds = $('#weight').val();
+      Person.gender = $('#gender').val();
+    }
+})
 }
 
 if (Meteor.isServer) {
