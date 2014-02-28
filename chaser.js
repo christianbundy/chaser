@@ -4,13 +4,20 @@ var time = new Deps.Dependency();
 
 var getTime = function (date) {
 
+    var suffix = 'AM'
+
     var hour = date.getHours();
     hour = (hour < 10 ? "0" : "") + hour;
+
+    if (hour > 12) {
+      suffix = 'PM';
+      hour = hour - 12;
+    }
 
     var min  = date.getMinutes();
     min = (min < 10 ? "0" : "") + min;
 
-    return hour + ":" + min;
+    return hour + ":" + min + ' ' + suffix;
 }
 
 var Person = {
@@ -89,6 +96,9 @@ if (Meteor.isClient) {
     'change input, change select': function() {
       Person.pounds = $('#weight').val();
       Person.gender = $('#gender').val();
+    },
+    'submit form': function (event) {
+      event.preventDefault();
     }
 })
 }
