@@ -4,20 +4,15 @@
 </head>
 
 <body>
-  <div class="container">
+  <div class="container center">
     {{> main}}
   </div>
 </body>
 
 <template name="main">
-<div class="row">
-  <div class="center col-sm-6 col-xs-12">
-    <h1 class="center">{{> bac}}</h1>
-  </div>
-  <div class="center col-sm-6 col-xs-12">
-    {{> action}}
-  </div>
-</div>
+<h1>{{> bac}}</h1>
+{{> action}}
+<br />
 <br />
 {{> history}}
 </template>
@@ -27,7 +22,7 @@
   <tbody>
     {{#each shots}}
     <tr>
-      <td>{{time}}</td>
+      <td><h2 class="center">{{easy}}</h2></td>
     </tr>
     {{/each}}
   </tbody>
@@ -39,12 +34,6 @@
 </template>
 
 <template name="action">
-<div class="row">
-<div class="col-sm-6">
-  <button class="pull-right reset btn btn-danger btn-lg">Reset</button>
-</div>
-<div class="col-sm-6">
-<button class="pull-left center shot btn btn-primary btn-lg">Shot</button>
-</div>
-</div>
+  <button class="center shot btn btn-primary btn-lg">Shot</button>
+  <button class="reset btn btn-danger btn-lg">Reset</button>
 </template>

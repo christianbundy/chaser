@@ -2,6 +2,28 @@ Shots = new Meteor.Collection('shots');
 
 var time = new Deps.Dependency();
 
+var getTime = function (date) {
+
+    var hour = date.getHours();
+    hour = (hour < 10 ? "0" : "") + hour;
+
+    var min  = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+
+    var sec  = date.getSeconds();
+    sec = (sec < 10 ? "0" : "") + sec;
+
+    var year = date.getFullYear();
+
+    var month = date.getMonth() + 1;
+    month = (month < 10 ? "0" : "") + month;
+
+    var day  = date.getDate();
+    day = (day < 10 ? "0" : "") + day;
+
+    return hour + ":" + min;
+}
+
 Person = {
   pounds: 122,
   penis: 0
@@ -18,16 +40,18 @@ bac = function (shots, pounds, penis, hours) {
 }
 
 if (Meteor.isClient) {
+  Meteor.loginVisitor()
+
   Template.history.shots = function () {
-    return Shots.find();
+    return Shots.find({user: Meteor.userId()});
   };
   setInterval(function () {
     time.changed()
-  }, 100)
+  }, 1000)
 
     Template.bac.current = function () {
     time.depend();
-    var all = Shots.find().fetch();
+    var all = Shots.find({user: Meteor.userId()}).fetch();
     if (all[0] != null) {
       var diff = (new Date() - new Date(all[0].time)) / 1000 / 60 / 60;
     if (all.length > 0) {
@@ -42,11 +66,12 @@ if (Meteor.isClient) {
   }
 
   Template.action.events({
-    'click .shot, tap .shot': function () {
+    'click .shot': function () {
       if (typeof console !== 'undefined')
-        Shots.insert({time: new Date()});
+      var now = new Date();
+        Shots.insert({time: now, easy: getTime(now), user: Meteor.userId()});
     },
-    'click .reset, tap .reset': function () {
+    'click .reset': function () {
       Meteor.call('clear');
     }
   });
@@ -56,7 +81,7 @@ if (Meteor.isServer) {
   Meteor.startup(function() {
     return Meteor.methods({
       clear: function() {
-        return Shots.remove({});
+        return Shots.remove({user: Meteor.userId()});
       }
     });
   });

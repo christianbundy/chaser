@@ -8,3 +8,6 @@ autopublish
 insecure
 preserve-inputs
 bootstrap-3
+accounts-base
+accounts-password
+accounts-guest
