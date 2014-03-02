@@ -3,9 +3,7 @@ Shots = new Meteor.Collection('shots');
 var time = new Deps.Dependency();
 
 var getTime = function (date) {
-
     var suffix = 'AM'
-
     var hour = date.getHours();
     hour = (hour < 10 ? "0" : "") + hour;
 
@@ -25,19 +23,23 @@ var Person = {
   gender: 'male'
 };
 
-bac = function (drinks, pounds, gender, hours) {
-  if (gender === 'male') {
-    var ratio = 0.58;
-    var mt = 0.015;
-  } else {
-    var ratio = 0.49;
-    var mt = 0.017;
-  }
+var bac = function (drinks, pounds, gender, hours) {
+  // Convert pounds to kilograms
   var kg = pounds * 0.453592;
 
-  var ebac = (0.806*drinks*1.2)/(ratio*kg) - (mt*hours);
+  // Body fat ratio and metabolism rate are gender-specific
+  if (gender === 'male') {
+    var ratio = 0.58;
+    var mr = 0.015;
+  } else {
+    var ratio = 0.49;
+    var mr = 0.017;
+  }
 
-  hours = (0.806*drinks*1.2)/(ratio*kg) / mt
+  // Widmark's equation
+  var ebac = (0.806*drinks*1.2)/(ratio*kg) - (mr*hours);
+
+  // Don't return a negative BAC
   return Math.max(ebac, 0);
 }
 
@@ -63,7 +65,7 @@ if (Meteor.isClient) {
     return Shots.find({user: Meteor.userId()});
   };
   setInterval(function () {
-    time.changed()
+    time.changed();
   }, 1000)
 
     Template.bac.current = function () {
@@ -96,8 +98,10 @@ if (Meteor.isClient) {
     'change input, change select': function() {
       Person.pounds = $('#weight').val();
       Person.gender = $('#gender').val();
+      time.changed();
     },
     'submit form': function (event) {
+      time.changed();
       event.preventDefault();
     }
 })
